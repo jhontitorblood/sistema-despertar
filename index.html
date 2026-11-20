@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b14"><meta name="description" content="Sistema Despertar: misiones, XP, atributos y progresión de cazador.">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="assets/icon.svg"><link rel="apple-touch-icon" href="assets/icon-192.png">
+<title>SISTEMA — Despertar</title><link rel="stylesheet" href="style.css">
+</head><body>
+<div class="app-shell">
+<header class="topbar"><div class="brand"><span class="brand-glyph">✧</span><div><div class="brand-name">SISTEMA</div><div class="brand-sub">PROTOCOLO DE DESPERTAR</div></div></div><button class="icon-btn" id="settingsQuick" aria-label="Configuración">⚙</button></header>
+<main id="main"></main>
+<nav class="bottom-nav" id="nav">
+<button data-view="home" class="nav-item active"><span>⌂</span><small>Inicio</small></button>
+<button data-view="missions" class="nav-item"><span>☷</span><small>Misiones</small></button>
+<button data-view="character" class="nav-item"><span>♙</span><small>Personaje</small></button>
+<button data-view="inventory" class="nav-item"><span>♧</span><small>Inventario</small></button>
+<button data-view="settings" class="nav-item"><span>⚙</span><small>Ajustes</small></button>
+</nav></div>
+<div id="toast" class="toast" aria-live="polite"></div>
+<dialog id="missionDialog"><form id="missionForm" method="dialog"><div class="dialog-head"><h2>Nueva misión</h2><button type="button" class="icon-btn" id="closeDialog">×</button></div><label>Nombre<input id="mName" required maxlength="60" placeholder="Ej. Caminar 30 minutos"></label><label>Descripción<input id="mDesc" maxlength="120" placeholder="Detalles opcionales"></label><div class="form-row"><label>Recompensa XP<input id="mXP" type="number" min="5" max="500" value="25" required></label><label>Tipo<select id="mType"><option>Personal</option><option>Salud</option><option>Estudio</option><option>Trabajo</option><option>Disciplina</option></select></label></div><button class="primary" type="submit">Crear misión</button></form></dialog>
+<script src="app.js"></script>
+</body></html>
