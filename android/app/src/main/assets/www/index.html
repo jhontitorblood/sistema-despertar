@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070910"><meta name="description" content="SISTEMA Despertar: RPG de hábitos, entrenamiento, misiones y evolución personal.">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="assets/icon.svg"><link rel="apple-touch-icon" href="assets/icon-192.png">
+<title>SISTEMA — Despertar</title><link rel="stylesheet" href="style.css">
+</head><body>
+<div class="ambient a1"></div><div class="ambient a2"></div>
+<div class="app-shell">
+<header class="topbar"><button class="brand" data-view="home"><span class="brand-mark">S</span><span><b>SISTEMA</b><small>PROTOCOLO DE DESPERTAR</small></span></button><div class="top-actions"><button class="icon-btn" id="installBtn" title="Instalar">⇩</button><button class="icon-btn" data-view="settings" title="Configuración">⚙</button></div></header>
+<main id="main" aria-live="polite"></main>
+<nav class="bottom-nav" id="nav"><button data-view="home" class="nav-item active"><i>⌂</i><small>Inicio</small></button><button data-view="missions" class="nav-item"><i>☷</i><small>Misiones</small></button><button data-view="character" class="nav-item"><i>♙</i><small>Cazador</small></button><button data-view="army" class="nav-item"><i>♜</i><small>Ejército</small></button><button data-view="settings" class="nav-item"><i>⚙</i><small>Ajustes</small></button></nav>
+</div><div id="toast" class="toast" role="status"></div><div id="overlay-root"></div>
+<dialog id="missionDialog"><form id="missionForm"><div class="dialog-head"><div><span class="eyebrow">NUEVA ORDEN</span><h2>Crear misión</h2></div><button type="button" class="icon-btn" id="closeDialog">×</button></div><label>Nombre<input id="mName" required maxlength="60" placeholder="Ej. Caminar 30 minutos"></label><label>Descripción<input id="mDesc" maxlength="120" placeholder="Detalles opcionales"></label><div class="form-row"><label>XP<input id="mXP" type="number" min="5" max="500" value="25"></label><label>Tipo<select id="mType"><option>Personal</option><option>Salud</option><option>Estudio</option><option>Trabajo</option><option>Disciplina</option></select></label></div><label class="check-label"><input id="mReminder" type="checkbox"> Recordatorio</label><label>Hora<input id="mTime" type="time" value="18:00"></label><label>Días de aviso<select id="mDays"><option value="all">Todos los días</option><option value="weekdays">Lunes a viernes</option><option value="weekend">Fin de semana</option></select></label><button class="primary" type="submit">Crear misión +</button></form></dialog>
+<script src="app.js"></script>
+</body></html>

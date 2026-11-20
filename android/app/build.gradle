@@ -1,0 +1,17 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.sistema.despertar'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.sistema.despertar'
+        minSdk 23
+        targetSdk 35
+        versionCode 12
+        versionName '1.2'
+    }
+    buildTypes {
+        debug { applicationIdSuffix '.debug'; versionNameSuffix '-debug' }
+        release { minifyEnabled false }
+    }
+}
