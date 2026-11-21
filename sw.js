@@ -1,4 +1,4 @@
-const CACHE='sistema-despertar-v18';
+const CACHE='sistema-despertar-v19';
 const CORE=['./','./index.html','./style.css','./app.js','./manifest.json','./assets/icon.svg','./assets/icon-192.png','./assets/icon-512.png','./assets/icon-sistema.png'];
 self.addEventListener('install',event=>{event.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(CORE);await self.skipWaiting()})())});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{for(const k of await caches.keys())if(k.startsWith('sistema-despertar-')&&k!==CACHE)await caches.delete(k);await self.clients.claim()})())});
