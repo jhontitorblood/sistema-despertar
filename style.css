@@ -21,3 +21,7 @@
 .awaken-figure{overflow:hidden;padding:0;border-radius:20px;width:min(88vw,300px);height:min(88vw,300px);margin:14px auto;background:radial-gradient(circle,#3b2d64 0,#17132a 65%,#090a12)}
 .awaken-figure .modal-art{height:100%;width:100%;object-fit:contain;filter:drop-shadow(0 0 20px #a889ff65)}
 .awaken-figure:has(.modal-art){border-radius:22px}
+
+/* V1.3.1 — Leyendas de héroes */
+.shadow-card .warrior-legend{color:#b5a7d8;font-size:11px;line-height:1.35;padding:4px 2px 2px;border-top:1px solid #3a3153}
+.awaken-card .warrior-legend{color:#c7b7e8;font-size:13px;line-height:1.5;margin:10px auto;max-width:340px}
