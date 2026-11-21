@@ -92,5 +92,6 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void scheduleReminder(String id,String title,String time,int dayMask){ReminderScheduler.daily(activity,id,title,time,dayMask);}
         @JavascriptInterface public void scheduleInterval(String id,String title,int minutes){ReminderScheduler.interval(activity,id,title,minutes);}
         @JavascriptInterface public void cancelReminder(String id){ReminderScheduler.cancel(activity,id);}
+        @JavascriptInterface public void openTikTok(String url){activity.runOnUiThread(()->{try{Intent appIntent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));appIntent.setPackage("com.zhiliaoapp.musically");activity.startActivity(appIntent);}catch(Exception e){try{Intent webIntent=new Intent(Intent.ACTION_VIEW,Uri.parse(url));activity.startActivity(webIntent);}catch(Exception ignored){}}});}
     }
 }
