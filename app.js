@@ -31,6 +31,7 @@ function startMusic(){if(!state.settings.music)return;try{const C=window.AudioCo
 function stopMusic(){if(musicCtx&&musicGain){musicGain.gain.cancelScheduledValues(musicCtx.currentTime);musicGain.gain.setTargetAtTime(0,musicCtx.currentTime,.8)}if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
 function adjustMusicVolume(){if(musicCtx&&musicGain&&state.settings.music)musicGain.gain.setTargetAtTime(.055*(Number(state.settings.volume)||.25),musicCtx.currentTime,.25)}
 function syncMusic(){if(state.settings.music)startMusic();else stopMusic()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMusic();else syncMusic()});
 function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2800)}
 function tiktokRewardReady(){return Date.now()-state.tiktokRewardAt>=86400000}
 function tiktokRemaining(){let ms=Math.max(0,86400000-(Date.now()-state.tiktokRewardAt));let h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);return `${h}h ${m}m`}
