@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b10"><meta name="description" content="HÉROE DEL ROCK — Beta jugable de Cotoca">
+<title>HÉROE DEL ROCK | Cotoca</title><link rel="stylesheet" href="cotoca.css">
+</head>
+<body>
+<div class="bg-noise"></div><header class="top"><a class="brand" href="index.html"><span class="brand-mark">HR</span><span><b>HÉROE DEL ROCK</b><small>BETA TERRITORIAL · COTOCA</small></span></a><div class="top-actions"><button id="saveBtn" class="icon-btn" title="Guardar">▣</button><button id="helpBtn" class="icon-btn" title="Ayuda">?</button></div></header>
+<main class="wrap">
+<section class="hero"><div class="hero-copy"><span class="eyebrow">SANTA CRUZ · PRIMER TERRITORIO</span><h1>LOS DOMINIOS<br><em>DEL JICHI</em></h1><p>Las aguas de Cotoca guardan un secreto antiguo. Los Bravos del Jichi controlan los caminos, pero algo más profundo está despertando.</p><div class="hero-tags"><span>HARD ROCK</span><span>7 RECLUTABLES</span><span>8 MISIONES</span></div></div><div class="hero-art"><div class="moon"></div><div class="reeds">〰 〰 〰</div><div class="jichi">🐉</div><div class="hero-caption">EL ECO BAJO LAS AGUAS</div></div></section>
+<section class="status panel"><div class="player-line"><div><small class="muted">Cazador</small><h2 id="playerName">El Despertado</h2><span class="rank" id="rank">RANGO E</span></div><div class="level"><small>NIVEL</small><b id="level">1</b></div></div><div class="xpbar"><span id="xpFill"></span></div><div class="xptext"><span id="xpText">0 / 100 XP</span><span id="coins">0 oro</span></div><div class="vitals"><div><span>HP</span><b id="hpText">100 / 100</b><i><u id="hpFill"></u></i></div><div><span>EP</span><b id="epText">40 / 40</b><i><u id="epFill"></u></i></div></div></section>
+<nav class="tabs" id="tabs"><button class="tab active" data-tab="world">Territorio</button><button class="tab" data-tab="missions">Misiones</button><button class="tab" data-tab="army">Legión</button><button class="tab" data-tab="character">Cazador</button><button class="tab" data-tab="codex">Crónicas</button></nav>
+<section id="view" class="view"></section>
+<footer><span>HÉROE DEL ROCK · PROTOTIPO COTOCA</span><button id="exportBtn" class="text-btn">Exportar partida</button><button id="resetBtn" class="text-btn danger-text">Reiniciar beta</button></footer>
+</main>
+<div id="modalRoot"></div><div id="toast" class="toast" role="status"></div>
+<script src="cotoca-data.js"></script><script src="cotoca-ui.js"></script><script src="cotoca-engine.js"></script>
+</body></html>
