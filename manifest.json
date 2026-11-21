@@ -3,7 +3,7 @@
  "start_url":"./?source=pwa", "scope":"./", "display":"standalone", "display_override":["standalone","fullscreen","minimal-ui"], "orientation":"portrait",
  "background_color":"#070910", "theme_color":"#080b13", "categories":["health","lifestyle","games"],
  "icons":[
-  {"src":"assets/icon/icon-sistema.png","sizes":"2048x2048","type":"image/png","purpose":"any"},
-  {"src":"assets/icon/icon-sistema.png","sizes":"2048x2048","type":"image/png","purpose":"maskable"}
+  {"src":"assets/icon-sistema.png","sizes":"2048x2048","type":"image/png","purpose":"any"},
+  {"src":"assets/icon-sistema.png","sizes":"2048x2048","type":"image/png","purpose":"maskable"}
  ]
 }
