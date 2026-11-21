@@ -1,0 +1,48 @@
+(()=>{'use strict';
+const KEY='hero_rock_cotoca_beta_v1';
+const clone=o=>JSON.parse(JSON.stringify(o));
+const fresh=()=>({name:'El Despertado',level:1,xp:0,totalXp:0,gold:25,hp:100,maxHp:100,ep:40,maxEp:40,stats:{fuerza:10,destreza:10,vida:10,energia:10},points:0,skillPoints:0,skills:[],missions:{},kills:{},clearedZones:['centro'],recruited:[],attempts:{},inventory:['potion','ether'],equipped:{weapon:null,armor:[],relic:null},seals:0,secretUnlocked:false,secretDefeated:false,history:[],activeParty:[],bossFlags:{},created:Date.now()});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||fresh()}catch{S=fresh()}
+const save=()=>{localStorage.setItem(KEY,JSON.stringify(S));UI.refreshHeader()};
+const log=(t)=>{S.history.unshift({t,at:new Date().toLocaleString('es-BO')});S.history=S.history.slice(0,80);save()};
+const char=id=>COTOCA.characters.find(c=>c.id===id);
+const item=id=>COTOCA.items.find(i=>i.id===id);
+const mission=id=>COTOCA.missions.find(m=>m.id===id);
+const xpNeed=()=>100+(S.level-1)*45;
+const totalAtk=()=>S.stats.fuerza*2+(item(S.equipped.weapon)?.atk||0)+(S.equipped.armor.reduce((n,id)=>n+(item(id)?.atk||0),0))+(item(S.equipped.relic)?.atk||0);
+const totalDef=()=>S.stats.vida+(item(S.equipped.weapon)?.def||0)+S.equipped.armor.reduce((n,id)=>n+(item(id)?.def||0),0)+(item(S.equipped.relic)?.def||0);
+function gainXP(n){S.xp+=n;S.totalXp+=n;let levels=0;while(S.xp>=xpNeed()){S.xp-=xpNeed();S.level++;S.points+=5;S.skillPoints++;S.maxHp+=12;S.maxEp+=5;S.hp=S.maxHp;S.ep=S.maxEp;levels++}if(levels)UI.toast('¡Nivel '+S.level+'! +5 puntos de atributo y +1 habilidad');save()}
+function addGold(n){S.gold+=n;save()}
+function reward(r){gainXP(r.xp||0);addGold(r.gold||0);if(r.item)grant(r.item);log('Recompensa recibida: '+(r.xp||0)+' XP y '+(r.gold||0)+' oro'+(r.item?' · '+item(r.item)?.name:''))}
+function grant(id){if(!S.inventory.includes(id)){S.inventory.push(id);UI.toast('Objeto obtenido: '+(item(id)?.name||id));log('Obtuviste '+(item(id)?.name||id))}save()}
+function missionDone(id){return !!S.missions[id]?.done}
+function zoneUnlocked(id){let z=COTOCA.zones.find(x=>x.id===id);return !!z&&S.clearedZones.length>=z.unlock}
+function nextMission(){return COTOCA.missions.find(m=>!m.secret&&!missionDone(m.id))}
+function unlockZone(id){if(!S.clearedZones.includes(id))S.clearedZones.push(id)}
+function completeMission(id){let m=mission(id);if(!m||missionDone(id))return false;if(m.secret&&S.seals<3)return false;S.missions[id]={done:true};if(m.id==='m1')unlockZone('centro');if(m.id==='m2')unlockZone('caminos');if(m.id==='m3')unlockZone('humedales');if(m.id==='m4')unlockZone('campamento');if(m.id==='m5')unlockZone('campamento');if(m.id==='m6')unlockZone('santuario');if(m.id==='m7')unlockZone('santuario');if(m.id==='m8'){grant('fragment');}if(m.secret){grant('registro');S.secretUnlocked=true}reward(m.reward);if(!m.secret&&COTOCA.missions.filter(x=>!x.secret).every(x=>missionDone(x.id)))UI.toast('COTOCA CONQUISTADA · El territorio cambia');log('Misión completada: '+m.title);save();return true}
+function enemiesDefeated(m){return (S.kills[m.id]||0)>=(m.kills||0)}
+function canStartMission(m){if(m.secret)return S.secretUnlocked&&!missionDone(m.id)&&S.seals>=3;if(m.id==='m1')return true;let idx=COTOCA.missions.filter(x=>!x.secret).findIndex(x=>x.id===m.id);let prev=COTOCA.missions.filter(x=>!x.secret)[idx-1];return !prev||missionDone(prev.id)}
+function startMission(id){let m=mission(id);if(!m||missionDone(id)||!canStartMission(m))return UI.toast('Aún no puedes iniciar esta misión');if(m.kills){UI.startEncounter({type:'mission',missionId:id,enemy:{name:m.enemy,icon:'⚔️',hp:70+S.level*10,atk:10+S.level*2,def:4,xp:0,gold:0},title:m.title});return}if(m.boss){UI.startBoss(m.boss,id);return}if(m.secret){if(S.seals<3)return UI.toast('Necesitas los tres sellos antiguos');completeMission(id);UI.render();return}UI.showStory(m); }
+function recordKill(enemy){S.kills[enemy.missionId]=(S.kills[enemy.missionId]||0)+1;save()}
+function enemyFor(id){return COTOCA.enemies.find(e=>e.id===id)||COTOCA.enemies[0]}
+function healFull(){S.hp=S.maxHp;S.ep=S.maxEp;save();UI.toast('Descanso completado: HP y EP al 100%')}
+function addSeal(){S.seals=Math.min(3,S.seals+1);save();UI.toast('Sello antiguo '+S.seals+'/3')}
+function afterMissionFight(id){let m=mission(id);if(!m)return;if(m.id==='m2'){S.kills.m2=2;completeMission(id)}else if(m.id==='secret'){completeMission(id)}else completeMission(id);UI.render()}
+function makeBoss(id){let c=char(id.replace(/[12]/g,''));if(id==='aruma1'||id==='aruma2')c=char('aruma');if(id==='zarkan'||id==='gorvak'||id==='malkor'||id==='nayara'||id==='xaldrak'||id==='sirena'||id==='aruma')c=char(id);if(id==='vharzul')return {id:'vharzul',name:'Vharzûl, la Serpiente del Abismo',title:'Boss Desde las Sombras',icon:'🐍',hp:560,atk:34,def:18,ep:100,rarity:'Secreto',chance:0,story:'Una entidad ancestral atrapada bajo el santuario. No pertenece a Los Bravos y no puede convertirse.'};return c}
+function bossStages(id){let c=makeBoss(id);if(id==='aruma1')return [{...c,hp:260,atk:25,def:15,name:'Aruma · Guardián humano',phase:1},{...c,hp:340,atk:34,def:20,name:'Aruma · Guardián de las Aguas Profundas',phase:2,icon:'🐉'}];if(id==='aruma2')return [{...c,hp:340,atk:34,def:20,name:'Aruma · Guardián de las Aguas Profundas',phase:2,icon:'🐉'}];return [{...c,phase:1}]}
+function attemptInfo(id){let a=S.attempts[id]||{used:0,readyAt:0};return a}
+function remaining(id){return Math.max(0,(attemptInfo(id).readyAt||0)-Date.now())}
+function beginConversion(id){let c=char(id);if(!c||S.recruited.includes(id))return;let a=attemptInfo(id);if(remaining(id)>0)return UI.toast('Este rival aún no ha regresado');if(a.used>=3){let hours=c.rank==='Capitán'?12:c.rank==='Lugarteniente'?24:36;S.attempts[id]={used:0,readyAt:Date.now()+hours*3600000};save();UI.toast('El rival desaparecerá durante '+hours+' horas');return}let chance=Math.max(5,Math.min(70,c.chance+(S.level-1)*2));let success=Math.random()*100<chance;a.used++;if(success){S.recruited.push(id);if(S.activeParty.length<3)S.activeParty.push(id);S.attempts[id]={used:0,readyAt:0};log(c.name+' fue convertido en seguidor espectral');UI.showConversion(c,true,chance)}else{S.attempts[id]=a;if(a.used>=3){let hours=c.rank==='Capitán'?12:c.rank==='Lugarteniente'?24:36;S.attempts[id]={used:3,readyAt:Date.now()+hours*3600000}}log('Falló la conversión de '+c.name+' ('+a.used+'/3 intentos)');UI.showConversion(c,false,chance)}save();UI.render()}
+function activeMembers(){return S.activeParty.map(char).filter(Boolean)}
+function toggleParty(id){if(!S.recruited.includes(id))return;if(S.activeParty.includes(id))S.activeParty=S.activeParty.filter(x=>x!==id);else if(S.activeParty.length<3)S.activeParty.push(id);else return UI.toast('Máximo 3 seguidores invocables al inicio');save();UI.render()}
+function assignStat(key){if(!S.points)return UI.toast('No tienes puntos disponibles');S.stats[key]++;S.points--;if(key==='vida'){S.maxHp+=10;S.hp+=10}if(key==='energia'){S.maxEp+=5;S.ep+=5}save();UI.render()}
+function buyRest(){healFull()}
+function useItem(id){let it=item(id);if(!it||!S.inventory.includes(id))return;if(it.heal){S.hp=Math.min(S.maxHp,S.hp+it.heal);S.inventory.splice(S.inventory.indexOf(id),1)}else if(it.restore){S.ep=Math.min(S.maxEp,S.ep+it.restore);S.inventory.splice(S.inventory.indexOf(id),1)}else return UI.toast('Este objeto no se consume aquí');save();UI.render()}
+function equip(id){let it=item(id);if(!it)return;if(it.slot==='weapon')S.equipped.weapon=id;else if(it.slot==='armor'){if(S.equipped.armor.includes(id))S.equipped.armor=S.equipped.armor.filter(x=>x!==id);else S.equipped.armor.push(id)}else if(it.slot==='relic')S.equipped.relic=id;else return;save();UI.render()}
+function sell(id){let it=item(id);if(!it||it.protected||it.slot==='quest')return UI.toast('Los objetos de historia están protegidos');if(['potion','ether'].includes(id))return UI.toast('Los consumibles no se venden');let price=Math.max(2,Math.round(((it.atk||0)*2+(it.def||0)*2+8)*.5));S.inventory.splice(S.inventory.indexOf(id),1);S.gold+=price;save();UI.toast('Vendiste por '+price+' oro');UI.render()}
+function exportSave(){let blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='heroe-del-rock-cotoca-save.json';a.click();URL.revokeObjectURL(a.href)}
+function reset(){if(!confirm('¿Borrar toda la partida de esta beta? Esta acción no afecta a SISTEMA Despertar.'))return;S=fresh();save();UI.render();UI.toast('Partida reiniciada')}
+function partyBuff(){let names=S.activeParty;let matches=COTOCA.synergies.filter(s=>s.pair.every(x=>names.includes(x)));return matches}
+window.Game={S,save,log,mission,missionDone,canStartMission,startMission,completeMission,afterMissionFight,enemyFor,makeBoss,bossStages,beginConversion,attemptInfo,remaining,activeMembers,toggleParty,assignStat,buyRest,healFull,useItem,equip,sell,exportSave,reset,gainXP,addGold,grant,recordKill,addSeal,partyBuff,zoneUnlocked,unlockZone,totalAtk,totalDef,xpNeed,saveKey:KEY,loadBackup(data){if(data&&data.level&&data.stats){S={...fresh(),...data};save();UI.render();return true}return false}};
+UI.init();
+})();
