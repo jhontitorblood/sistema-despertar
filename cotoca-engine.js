@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const KEY='hero_rock_cotoca_beta_v1';
 const clone=o=>JSON.parse(JSON.stringify(o));
-const fresh=()=>({name:'El Despertado',level:1,xp:0,totalXp:0,gold:25,hp:100,maxHp:100,ep:40,maxEp:40,stats:{fuerza:10,destreza:10,vida:10,energia:10},points:0,skillPoints:0,skills:[],missions:{},kills:{},clearedZones:['centro'],recruited:[],defeated:[],attempts:{},sealLocations:[],inventory:['potion','ether'],equipped:{weapon:null,armor:[],relic:null},seals:0,secretUnlocked:false,secretDefeated:false,history:[],activeParty:[],bossFlags:{},created:Date.now()});
+const fresh=()=>({name:'El Despertado',level:1,xp:0,totalXp:0,gold:25,hp:220,maxHp:220,ep:60,maxEp:60,stats:{fuerza:10,destreza:10,vida:10,energia:10},points:0,skillPoints:0,skills:[],missions:{},kills:{},clearedZones:['centro'],recruited:[],defeated:[],attempts:{},sealLocations:[],inventory:['potion','ether'],equipped:{weapon:null,armor:[],relic:null},seals:0,secretUnlocked:false,secretDefeated:false,history:[],activeParty:[],bossFlags:{},created:Date.now()});
 let S;try{S=JSON.parse(localStorage.getItem(KEY))||fresh()}catch{S=fresh()}
 const save=()=>{localStorage.setItem(KEY,JSON.stringify(S));UI.refreshHeader()};
 const log=(t)=>{S.history.unshift({t,at:new Date().toLocaleString('es-BO')});S.history=S.history.slice(0,80);save()};
@@ -9,8 +9,8 @@ const char=id=>COTOCA.characters.find(c=>c.id===id);
 const item=id=>COTOCA.items.find(i=>i.id===id);
 const mission=id=>COTOCA.missions.find(m=>m.id===id);
 const xpNeed=()=>100+(S.level-1)*45;
-const totalAtk=()=>S.stats.fuerza*2+(item(S.equipped.weapon)?.atk||0)+(S.equipped.armor.reduce((n,id)=>n+(item(id)?.atk||0),0))+(item(S.equipped.relic)?.atk||0);
-const totalDef=()=>S.stats.vida+(item(S.equipped.weapon)?.def||0)+S.equipped.armor.reduce((n,id)=>n+(item(id)?.def||0),0)+(item(S.equipped.relic)?.def||0);
+const totalAtk=()=>S.stats.fuerza*5+(item(S.equipped.weapon)?.atk||0)+(S.equipped.armor.reduce((n,id)=>n+(item(id)?.atk||0),0))+(item(S.equipped.relic)?.atk||0);
+const totalDef=()=>S.stats.vida*2+(item(S.equipped.weapon)?.def||0)+S.equipped.armor.reduce((n,id)=>n+(item(id)?.def||0),0)+(item(S.equipped.relic)?.def||0);
 function gainXP(n){S.xp+=n;S.totalXp+=n;let levels=0;while(S.xp>=xpNeed()){S.xp-=xpNeed();S.level++;S.points+=5;S.skillPoints++;S.maxHp+=12;S.maxEp+=5;S.hp=S.maxHp;S.ep=S.maxEp;levels++}if(levels)UI.toast('¡Nivel '+S.level+'! +5 puntos de atributo y +1 habilidad');save()}
 function addGold(n){S.gold+=n;save()}
 function reward(r){gainXP(r.xp||0);addGold(r.gold||0);if(r.item)grant(r.item);log('Recompensa recibida: '+(r.xp||0)+' XP y '+(r.gold||0)+' oro'+(r.item?' · '+item(r.item)?.name:''))}
