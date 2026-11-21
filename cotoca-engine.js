@@ -10,7 +10,7 @@ const item=id=>COTOCA.items.find(i=>i.id===id);
 const mission=id=>COTOCA.missions.find(m=>m.id===id);
 const xpNeed=()=>100+(S.level-1)*45;
 const totalAtk=()=>S.stats.fuerza*5+(item(S.equipped.weapon)?.atk||0)+(S.equipped.armor.reduce((n,id)=>n+(item(id)?.atk||0),0))+(item(S.equipped.relic)?.atk||0);
-const totalDef=()=>S.stats.vida*2+(item(S.equipped.weapon)?.def||0)+S.equipped.armor.reduce((n,id)=>n+(item(id)?.def||0),0)+(item(S.equipped.relic)?.def||0);
+const setCount=()=>S.equipped.armor.filter(id=>item(id)?.set==='guardian').length;const guardBonus=()=>setCount()>=4?20:12;const totalDef=()=>S.stats.vida*2+(setCount()>=3?5:0)+(item(S.equipped.weapon)?.def||0)+S.equipped.armor.reduce((n,id)=>n+(item(id)?.def||0),0)+(item(S.equipped.relic)?.def||0);
 function gainXP(n){S.xp+=n;S.totalXp+=n;let levels=0;while(S.xp>=xpNeed()){S.xp-=xpNeed();S.level++;S.points+=5;S.skillPoints++;S.maxHp+=12;S.maxEp+=5;S.hp=S.maxHp;S.ep=S.maxEp;levels++}if(levels)UI.toast('¡Nivel '+S.level+'! +5 puntos de atributo y +1 habilidad');save()}
 function addGold(n){S.gold+=n;save()}
 function reward(r){gainXP(r.xp||0);addGold(r.gold||0);if(r.item)grant(r.item);log('Recompensa recibida: '+(r.xp||0)+' XP y '+(r.gold||0)+' oro'+(r.item?' · '+item(r.item)?.name:''))}
@@ -43,6 +43,6 @@ function sell(id){let it=item(id);if(!it||it.protected||it.slot==='quest')return
 function exportSave(){let blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='heroe-del-rock-cotoca-save.json';a.click();URL.revokeObjectURL(a.href)}
 function reset(){if(!confirm('¿Borrar toda la partida de esta beta? Esta acción no afecta a SISTEMA Despertar.'))return;Object.assign(S,fresh());save();UI.render();UI.toast('Partida reiniciada')}
 function partyBuff(){let names=S.activeParty;let matches=COTOCA.synergies.filter(s=>s.pair.every(x=>names.includes(x)));return matches}
-window.Game={S,save,log,mission,missionDone,canStartMission,startMission,completeMission,afterMissionFight,enemyFor,makeBoss,bossStages,beginConversion,attemptInfo,remaining,activeMembers,toggleParty,assignStat,buyRest,healFull,buyItem,useItem,equip,sell,exportSave,reset,gainXP,addGold,grant,recordKill,addSeal,partyBuff,zoneUnlocked,unlockZone,totalAtk,totalDef,xpNeed,saveKey:KEY,loadBackup(data){if(data&&data.level&&data.stats){Object.assign(S,{...fresh(),...data});save();UI.render();return true}return false}};
+window.Game={S,save,log,mission,missionDone,canStartMission,startMission,completeMission,afterMissionFight,enemyFor,makeBoss,bossStages,beginConversion,attemptInfo,remaining,activeMembers,toggleParty,assignStat,buyRest,healFull,buyItem,useItem,equip,sell,exportSave,reset,gainXP,addGold,grant,recordKill,addSeal,partyBuff,zoneUnlocked,unlockZone,totalAtk,totalDef,setCount,guardBonus,xpNeed,saveKey:KEY,loadBackup(data){if(data&&data.level&&data.stats){Object.assign(S,{...fresh(),...data});save();UI.render();return true}return false}};
 UI.init();
 })();
